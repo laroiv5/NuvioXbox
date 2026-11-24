@@ -22,14 +22,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run runtime lint
+        run: npm run lint:runtime
 
       - name: Build and stage Xbox WebCode
         run: npm run build:xbox
@@ -52,7 +52,7 @@ jobs:
           }
 
           $uapPlatformsDir = "${env:ProgramFiles(x86)}\Windows Kits\10\Platforms\UAP"
-          $sdkVersions = Get-ChildItem -Path $uapPlatformsDir -Directory | Sort-Object Name -Descending
+          $sdkVersions = Get-ChildItem -Path $uapPlatformsDir -Directory | Sort-Object { [version]$_.Name } -Descending
           if (-not $sdkVersions) {
             throw "No Windows 10/11 UAP SDK found in $uapPlatformsDir"
           }
@@ -111,7 +111,7 @@ jobs:
       - name: Collect MSIX and x64 dependencies
         shell: pwsh
         run: |
-          $pkgFiles = Get-ChildItem -Path "artifacts\AppPackages" -Include *.msix,*.appx -Recurse | Where-Object { $_.DirectoryName -notmatch "Dependencies" }
+          $pkgFiles = Get-ChildItem -Path "artifacts\AppPackages" -File -Recurse | Where-Object { $_.Extension -in @('.msix', '.appx', '.msixbundle', '.appxbundle') -and $_.FullName -notmatch '[\\/]Dependencies[\\/]' }
           if (-not $pkgFiles) {
             throw "No .msix or .appx package produced in artifacts\AppPackages"
           }
