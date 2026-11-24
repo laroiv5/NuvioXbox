@@ -39,10 +39,11 @@ fi
 
 "$GH_BIN" repo set-default "$REPO_SLUG" >/dev/null 2>&1 || true
 
-echo "Waiting for GitHub Actions workflow ($WORKFLOW_NAME) to start..."
+HEAD_SHA="$(git rev-parse HEAD)"
+echo "Waiting for GitHub Actions workflow ($WORKFLOW_NAME) for commit $HEAD_SHA..."
 RUN_ID=""
 for _ in $(seq 1 18); do
-  RUN_ID="$("$GH_BIN" run list -R "$REPO_SLUG" --workflow="$WORKFLOW_NAME" --branch main --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
+  RUN_ID="$("$GH_BIN" run list -R "$REPO_SLUG" --workflow="$WORKFLOW_NAME" --commit "$HEAD_SHA" --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
   if [[ -n "$RUN_ID" ]]; then
     break
   fi
@@ -54,7 +55,7 @@ if [[ -z "$RUN_ID" ]]; then
   "$GH_BIN" workflow run "$WORKFLOW_NAME" -R "$REPO_SLUG" --ref main
   for _ in $(seq 1 12); do
     sleep 5
-    RUN_ID="$("$GH_BIN" run list -R "$REPO_SLUG" --workflow="$WORKFLOW_NAME" --branch main --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
+    RUN_ID="$("$GH_BIN" run list -R "$REPO_SLUG" --workflow="$WORKFLOW_NAME" --commit "$HEAD_SHA" --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>/dev/null || true)"
     if [[ -n "$RUN_ID" ]]; then
       break
     fi

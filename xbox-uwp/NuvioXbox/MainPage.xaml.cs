@@ -53,7 +53,7 @@ namespace NuvioXbox
         private async void InitializeWebViewAsync()
         {
             webView = new WebView2();
-            webView.DefaultBackgroundColor = Colors.Transparent;
+            webView.Background = new Windows.UI.Xaml.Media.SolidColorBrush(Colors.Transparent);
             webView.HorizontalAlignment = HorizontalAlignment.Stretch;
             webView.VerticalAlignment = VerticalAlignment.Stretch;
 
