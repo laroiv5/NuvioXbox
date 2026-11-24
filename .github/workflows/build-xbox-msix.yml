@@ -1,0 +1,146 @@
+name: Build NuvioXbox (Xbox Series X|S UWP MSIX)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build-xbox-msix:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build and stage Xbox WebCode
+        run: npm run build:xbox
+
+      - name: Run Xbox integration tests
+        run: node --test js/platform/xbox/xboxAdapter.test.mjs scripts/test-xbox-build-staging.mjs
+
+      - name: Verify UWP SDK and MSBuild targets
+        shell: pwsh
+        run: |
+          $vsWhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vsWhere -latest -products * -property installationPath
+          Write-Host "Visual Studio path: $vsPath"
+
+          $xamlTargets = Get-ChildItem -Path "$vsPath\MSBuild\Microsoft\WindowsXaml" -Filter "Microsoft.Windows.UI.Xaml.CSharp.targets" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $xamlTargets) {
+            Write-Host "Installing UWP build tools component..."
+            $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+            Start-Process -FilePath $installer -ArgumentList "modify", "--installPath", "`"$vsPath`"", "--add", "Microsoft.VisualStudio.ComponentGroup.UWP.Support", "--add", "Microsoft.VisualStudio.Workload.Universal", "--quiet", "--wait", "--norestart" -Wait -NoNewWindow
+          }
+
+          $uapPlatformsDir = "${env:ProgramFiles(x86)}\Windows Kits\10\Platforms\UAP"
+          $sdkVersions = Get-ChildItem -Path $uapPlatformsDir -Directory | Sort-Object Name -Descending
+          if (-not $sdkVersions) {
+            throw "No Windows 10/11 UAP SDK found in $uapPlatformsDir"
+          }
+          $selectedSdk = $sdkVersions[0].Name
+          Write-Host "Using Windows UAP SDK version: $selectedSdk"
+          "WIN_SDK_VER=$selectedSdk" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore UWP NuGet packages
+        shell: pwsh
+        run: |
+          nuget restore xbox-uwp\NuvioXbox.sln
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Generate sideload signing certificate
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "artifacts\dist-xbox" | Out-Null
+          $pass = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 24 | ForEach-Object {[char]$_})
+          "::add-mask::$pass" | Write-Host
+          "PFX_PASS=$pass" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+          $cert = New-SelfSignedCertificate -Type Custom `
+            -Subject "CN=NuvioXbox" `
+            -KeyUsage DigitalSignature `
+            -FriendlyName "NuvioXbox Sideload" `
+            -CertStoreLocation "Cert:\CurrentUser\My" `
+            -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")
+
+          $securePass = ConvertTo-SecureString -String $pass -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath "NuvioXbox_SigningKey.pfx" -Password $securePass | Out-Null
+          Export-Certificate -Cert $cert -FilePath "artifacts\dist-xbox\NuvioXbox.cer" | Out-Null
+
+      - name: Build UWP MSIX package (x64)
+        shell: pwsh
+        run: |
+          $root = (Get-Location).Path
+          msbuild "xbox-uwp\NuvioXbox.sln" `
+            /restore `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            "/p:TargetPlatformVersion=$($env:WIN_SDK_VER)" `
+            /p:AppxBundle=Never `
+            /p:UapAppxPackageBuildMode=SideloadOnly `
+            /p:AppxPackageSigningEnabled=true `
+            "/p:PackageCertificateKeyFile=$root\NuvioXbox_SigningKey.pfx" `
+            "/p:PackageCertificatePassword=$($env:PFX_PASS)" `
+            "/p:AppxPackageDir=$root\artifacts\AppPackages\"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Collect MSIX and x64 dependencies
+        shell: pwsh
+        run: |
+          $pkgFiles = Get-ChildItem -Path "artifacts\AppPackages" -Include *.msix,*.appx -Recurse | Where-Object { $_.DirectoryName -notmatch "Dependencies" }
+          if (-not $pkgFiles) {
+            throw "No .msix or .appx package produced in artifacts\AppPackages"
+          }
+          foreach ($file in $pkgFiles) {
+            Copy-Item $file.FullName -Destination "artifacts\dist-xbox\" -Force
+          }
+
+          $depsDir = Get-ChildItem -Path "artifacts\AppPackages" -Directory -Filter "Dependencies" -Recurse | Select-Object -First 1
+          if ($depsDir) {
+            $x64Deps = Join-Path $depsDir.FullName "x64"
+            if (Test-Path $x64Deps) {
+              Copy-Item $x64Deps -Destination "artifacts\dist-xbox\Dependencies-x64" -Recurse -Force
+            }
+          }
+
+          Get-ChildItem -Path "artifacts\dist-xbox" -Recurse | Select-Object FullName, Length
+
+      - name: Upload Xbox MSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NuvioXbox-XboxSeries-x64
+          path: artifacts/dist-xbox/
+          retention-days: 30
+
+      - name: Attach to GitHub Release on tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/dist-xbox/*.msix
+            artifacts/dist-xbox/*.appx
+            artifacts/dist-xbox/NuvioXbox.cer

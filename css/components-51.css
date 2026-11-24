@@ -1,0 +1,684 @@
+.stream-route-stream-badge.image img {
+  display: block;
+  max-height: 32px;
+  max-width: 184px;
+  object-fit: contain;
+}
+
+.stream-route-stream-badge.size {
+  min-height: 40px;
+  padding: 0 12px;
+  border-color: #0a0c0c;
+  background: #0a0c0c;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.stream-route-stream-badge.quality {
+  border-color: rgba(0, 183, 79, 0.42);
+  background: rgba(0, 183, 79, 0.14);
+  color: #4ade80;
+}
+
+.stream-route-stream-badge.visual {
+  border-color: rgba(251, 188, 5, 0.38);
+  background: rgba(251, 188, 5, 0.12);
+  color: #facc15;
+}
+
+.stream-route-stream-badge.codec {
+  border-color: rgba(33, 150, 243, 0.36);
+  background: rgba(33, 150, 243, 0.12);
+  color: #60a5fa;
+}
+
+.stream-route-stream-badge.audio {
+  border-color: rgba(236, 72, 153, 0.34);
+  background: rgba(236, 72, 153, 0.1);
+  color: #f472b6;
+}
+
+.stream-route-stream-badge.language {
+  border-color: rgba(20, 184, 166, 0.34);
+  background: rgba(20, 184, 166, 0.1);
+  color: #5eead4;
+}
+
+.stream-route-stream-badge.service {
+  color: var(--text-tertiary);
+}
+
+.stream-route-card-line {
+  margin-top: 8px;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* Android renders the description as one Text block: no extra gap between its lines. */
+.stream-route-card-line.secondary {
+  margin-top: 0;
+}
+
+.stream-route-card-meta {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stream-route-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  line-height: 25px;
+}
+
+.stream-route-meta-item.peers {
+  color: #2196f3;
+}
+
+.stream-route-meta-item.size {
+  color: var(--text-secondary);
+}
+
+.stream-route-meta-item.source {
+  color: var(--text-secondary);
+}
+
+.stream-route-meta-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stream-route-meta-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stream-route-card-side {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+}
+
+.stream-route-addon-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: 0;
+  color: #00b74f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.stream-route-addon-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.stream-route-addon-badge span {
+  font-size: 33px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.stream-route-addon-name {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  text-align: end;
+}
+
+.stream-route-provider-label {
+  padding: 0 0 8px 28px;
+  color: var(--text-secondary);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.stream-route-card-badges:first-child {
+  margin: 0 0 20px;
+}
+
+.stream-route-empty {
+  flex-direction: column;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.stream-route-retry {
+  padding: 20px 40px;
+  border-radius: 16px;
+  border: 0;
+  color: var(--text-color);
+  background: var(--card-bg);
+  font: inherit;
+}
+
+.stream-route-retry.focused {
+  color: var(--on-secondary);
+  background: var(--secondary-color);
+  outline: 4px solid var(--secondary-color);
+}
+
+.stream-route-toast {
+  position: fixed;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 14px 24px;
+  border-radius: 18px;
+  background: rgba(var(--bg-elevated-rgb-legacy), 0.96);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  font-size: 22px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+.stream-route-toast.visible {
+  opacity: 1;
+}
+
+.stream-route-skeleton-line {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(56, 56, 56, 0.5),
+    rgba(96, 96, 96, 0.85),
+    rgba(56, 56, 56, 0.5)
+  );
+  background-size: 220% 100%;
+  animation: streamRouteSkeletonShimmer 2.2s ease-in-out infinite;
+  margin-top: 12px;
+}
+
+/* Widths/heights mirror the real card rows: heading, quality, then two lines. */
+
+.stream-route-skeleton-line:first-child {
+  width: 34%;
+  height: 22px;
+  margin-top: 0;
+}
+
+.stream-route-skeleton-line:nth-child(2) {
+  width: 12%;
+  height: 18px;
+  margin-top: 14px;
+}
+
+.stream-route-skeleton-line:last-child {
+  width: 56%;
+}
+
+@keyframes streamRoutePanelEnter {
+  from {
+    opacity: 0;
+    transform: translateX(4%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes streamRouteSkeletonShimmer {
+  0% {
+    opacity: 0.55;
+    background-position: 120% 0;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.55;
+    background-position: -120% 0;
+  }
+}
+
+/* Android CastDetailScreen (x2 TV canvas: every value is the Android dp/sp value doubled). */
+.cast-detail-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--text-color);
+  /* Left accent gradient over the plain background. */
+  background:
+    linear-gradient(
+      90deg,
+      rgba(var(--secondary-color-rgb-legacy), 0.26) 0%,
+      rgba(var(--secondary-color-rgb-legacy), 0.18) 12%,
+      rgba(var(--secondary-color-rgb-legacy), 0.1) 28%,
+      rgba(var(--secondary-color-rgb-legacy), 0.04) 45%,
+      rgba(var(--secondary-color-rgb-legacy), 0) 60%
+    ),
+    var(--bg-color);
+}
+
+.cast-detail-hero {
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  min-height: 0;
+  padding: 64px 96px 16px; /* top xxl, sides xxxl, bottom sm */
+}
+
+.cast-detail-hero.is-expanded {
+  flex: 1 1 auto;
+}
+
+.cast-detail-portrait {
+  position: relative;
+  flex: 0 0 320px;
+  width: 320px;
+  height: 480px;
+  margin-right: 48px; /* spacing.xl */
+  overflow: hidden;
+  border-radius: 32px; /* radii.xl */
+  border: 2px solid var(--border-color);
+  background: #2d2d2d; /* SurfaceVariant */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.cast-detail-portrait.focused {
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px var(--focus-color);
+  transform: scale(1.1);
+}
+
+.cast-detail-portrait-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cast-detail-portrait-initial {
+  color: var(--text-tertiary);
+  font-size: 96px;
+  line-height: 112px;
+  font-weight: 700;
+}
+
+.cast-detail-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.cast-detail-hero.is-expanded .cast-detail-info {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+.cast-detail-name {
+  margin: 0 0 36px; /* spacing.sm + 10dp */
+  color: var(--text-color);
+  font-size: 56px;
+  line-height: 72px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cast-detail-facts {
+  margin-bottom: 16px;
+}
+
+.cast-detail-fact {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 28px;
+  line-height: 40px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cast-detail-bio {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 28px;
+  line-height: 40px;
+  letter-spacing: 0.5px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+
+.cast-detail-hero.is-expanded .cast-detail-bio-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cast-detail-hero.is-expanded .cast-detail-bio-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.cast-detail-hero.is-expanded .cast-detail-bio {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+  overflow: visible;
+  padding-right: 24px;
+}
+
+.cast-detail-bio-hint {
+  margin-top: 16px;
+  color: var(--text-tertiary);
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: 0.8px;
+}
+
+.cast-filmography-header {
+  display: flex;
+  align-items: center;
+  padding: 24px 96px 16px; /* top md, sides xxxl, bottom sm */
+}
+
+.cast-filmography-title {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 40px;
+  line-height: 56px;
+  font-weight: 600;
+}
+
+.cast-filmography-count {
+  margin-left: 24px;
+  padding: 4px 16px;
+  border-radius: 8px;
+  background: #2d2d2d; /* SurfaceVariant */
+  color: var(--text-tertiary);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* TV Material TabRow + pill indicator: the pill sits under the selected tab. With focus in the
+   row it is onSurface and the focused tab text surfaceVariant; otherwise it is secondaryContainer
+   at 40% with onPrimaryContainer text, and the other tabs fade to 40%. */
+.cast-filmography-tabs {
+  display: flex;
+  margin-left: 32px;
+}
+
+.cast-filmography-tab + .cast-filmography-tab {
+  margin-left: 16px;
+}
+
+.cast-filmography-tab {
+  padding: 8px 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  font: inherit;
+  font-size: 28px;
+  line-height: 40px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+.cast-filmography-tabs.has-focus .cast-filmography-tab {
+  color: #ffffff;
+}
+
+.cast-filmography-tab.is-selected {
+  background: rgba(74, 68, 88, 0.4);
+  color: #eaddff;
+}
+
+.cast-filmography-tabs.has-focus .cast-filmography-tab.is-selected {
+  background: #ffffff;
+  color: #2d2d2d;
+}
+
+.cast-filmography-row {
+  flex: 0 0 auto;
+}
+
+.cast-filmography-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 8px 96px; /* vertical xs, horizontal xxxl */
+}
+
+.cast-filmography-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cast-film-card {
+  flex: 0 0 224px;
+  width: 224px;
+  min-width: 224px;
+  box-sizing: border-box;
+}
+
+.cast-film-card + .cast-film-card {
+  margin-left: 24px; /* spacing.md */
+}
+
+.cast-film-card-media {
+  position: relative;
+  width: 100%;
+  height: 336px;
+  overflow: hidden;
+  border-radius: var(--cast-poster-radius, 24px);
+  background: var(--card-bg);
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.cast-film-card.focused .cast-film-card-media {
+  box-shadow: 0 0 0 4px var(--focus-color);
+  transform: scale(1.02);
+}
+
+.cast-film-card-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cast-film-card-title {
+  padding: 16px 4px 0;
+  color: var(--text-color);
+  font-size: 32px;
+  line-height: 48px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Landscape poster mode: the card is as wide as the poster is tall (240dp) at 16:9. */
+.cast-filmography.is-landscape .cast-film-card {
+  flex-basis: 480px;
+  width: 480px;
+  min-width: 480px;
+}
+
+.cast-filmography.is-landscape .cast-film-card-media {
+  height: 270px;
+}
+
+.cast-detail-skeleton .cast-skeleton-block {
+  background: var(--card-bg);
+  animation: castSkeletonPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes castSkeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.cast-detail-skeleton .cast-detail-name {
+  margin-bottom: 36px;
+}
+
+.cast-skeleton-line {
+  height: 28px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.cast-skeleton-title {
+  width: 280px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.cast-skeleton-count {
+  width: 72px;
+  height: 36px;
+  margin-left: 24px;
+  border-radius: 8px;
+}
+
+.cast-skeleton-row {
+  display: flex;
+  padding: 8px 96px 0;
+  overflow: hidden;
+}
+
+.cast-skeleton-card {
+  flex: 0 0 224px;
+  width: 224px;
+}
+
+.cast-skeleton-card + .cast-skeleton-card {
+  margin-left: 24px;
+}
+
+.cast-skeleton-poster {
+  height: 336px;
+  border-radius: 24px;
+}
+
+.cast-skeleton-label {
+  height: 32px;
+  margin-top: 16px;
+  border-radius: 8px;
+}
+
+.cast-detail-error {
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+}
+
+.cast-detail-error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cast-detail-error-title {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 40px;
+  line-height: 56px;
+  font-weight: 500;
+}
+
+.cast-detail-error-message {
+  margin: 16px 0 0;
+  color: var(--text-secondary);
+  font-size: 28px;
+  line-height: 40px;
+}
+
+.cast-detail-retry {
+  margin-top: 48px;
+  padding: 20px 40px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--secondary-color);
+  color: var(--on-secondary);
+  font: inherit;
+  font-size: 28px;
+  line-height: 40px;
+  font-weight: 600;
+}
+
+.cast-detail-retry.focused {
+  background: var(--secondary-variant);
+  transform: scale(1.1);
+}
+
+.legacy-tizen .cast-detail-portrait,
+.legacy-webos .cast-detail-portrait,
+.legacy-tizen .cast-film-card-media,
+.legacy-webos .cast-film-card-media {
+  transition: none;
+}
